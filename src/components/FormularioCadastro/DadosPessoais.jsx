@@ -6,22 +6,34 @@ function DadosPessoais({ aoEnviar, validacoes }) {
     const [nome, setNome] = useState('');
     const [sobrenome, setSobrenome] = useState('');
     const [cpf, setCpf] = useState('');
+
     const [promocoes, setPromocoes] = useState(true);
     const [novidades, setNovidades] = useState(true);
     const [erros, setErros] = useState({ cpf: { valido: true, texto: "" } })
 
     function validarCampos(e) {
-        const {name, value} = e.target
-        const novoEstado = {...erros}
-        novoEstado[name] =  validacoes[name](value)
+        const { name, value } = e.target
+        const novoEstado = { ...erros }
+        novoEstado[name] = validacoes[name](value)
         setErros(novoEstado)
-        console.log(novoEstado)
+    }
+
+    function possoEnviar() {
+        for(let campos in erros) {
+            if(!erros[campos].valido) {
+                return false
+            }
+        }
+        return true
     }
 
     return (
         <form onSubmit={e => {
             e.preventDefault()
-            aoEnviar({ nome, sobrenome, cpf, novidades, promocoes })
+            if(possoEnviar()) {
+                aoEnviar({ nome, sobrenome, cpf, novidades, promocoes })
+            }
+            
         }}>
             <TextField
                 value={nome}
@@ -92,7 +104,7 @@ function DadosPessoais({ aoEnviar, validacoes }) {
                 type='submit'
                 variant='contained'
                 color='primary'
-            >Cadastrar</Button>
+            >Próximo</Button>
         </form>
     )
 }
